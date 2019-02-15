@@ -1,0 +1,30 @@
+version: '3.0'
+services:
+
+  backend:
+    container_name: flask-app
+    restart: always
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server:/home/server
+    ports:
+      - '5000:5000'
+    environment:
+      CONFIG: 'app.config.DevelopmentConfig'  # class in config.py
+    command: flask run --host="0.0.0.0"
+
+
+  frontend:
+    container_name: react-app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - './frontend:/app'
+      - '/app/node_modules'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - 'backend'
